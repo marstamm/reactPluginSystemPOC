@@ -1,7 +1,6 @@
-import { React } from 'react';
+import React from 'react';
 
-export const PluginContext = React.createContext(
-  {
-    plugins: {},
-    addPlugin: () => {}
-  });
+export const PluginContext = React.createContext({
+  plugins: {},
+  addPlugin: () => {}
+});
