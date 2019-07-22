@@ -1,0 +1,17 @@
+body {
+  position: relative;
+}
+
+.ctn-column {
+  white-space: pre;
+}
+
+thead, tbody, tr, td {
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100px;
+}
+
+tr {
+  max-width: 100%;
+}
