@@ -1,83 +1,86 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import camAPI from '../services/restClient';
 // import Table from '../components/Table';
 import SortableTable from '../components/SortableTable';
 import {ProcessDefinitionContext} from '../contexts/ProcessDefinitionContext';
 
-class ProcessInstances extends React.Component {
-  constructor(props) {
-    super(props);
+function ProcessInstances(props) {
 
-    this.state = {
-      processList: null,
-      sortObj: {sortBy: 'instanceId', sortOrder: 'desc'}
-    };
-  }
-
-  componentDidMount() {
-    this.updateList({sortBy: 'instanceId', sortOrder: 'desc'});
-  }
-
-  updateList = sorting => {
-    this._asyncRequest = camAPI.processInstance
-      .list({
-        processDefinitionId: this.props.processDefinition.id,
-        ...sorting
-      })
-      .then(data => {
-        console.log(data);
-        this.setState({processList: data, sortObj: sorting});
-      })
-      .catch(e => {
-        console.log(e);
-      });
-  };
-
-  handleSortChange = sortObj => {
+  const handleSortChange = (newSortObj, oldSortObj, setSortObj) => {
     // do stuff
-    let sorting = {sortBy: sortObj.request, sortOrder: 'desc'};
+    console.log(newSortObj, oldSortObj);
 
-    if (sortObj.request === this.state.sortObj.sortBy)
-      sorting.sortOrder =
-        this.state.sortObj.sortOrder === 'desc' ? 'asc' : 'desc';
+    let sorting = {sortBy: newSortObj.request, sortOrder: 'asc'};
 
-    this.setState({processList: null});
-    this.updateList(sorting);
-  };
-
-  componentDidUpdate(prevProps) {
-    // Typical usage (don't forget to compare props):
-    if (prevProps.processDefinition.id !== this.props.processDefinition.id) {
-      this.updateList({sortBy: 'instanceId', sortOrder: 'desc'});
+    if (newSortObj.request === oldSortObj.sortBy) {
+      console.log('Foobar', newSortObj.sortOrder);
+      sorting.sortOrder = oldSortObj.sortOrder === 'desc' ? 'asc' : 'desc';
     }
-  }
+
+
+      console.log(sorting, oldSortObj);
+    // setProcessList(null);
+    setSortObj(sorting);
+    // updateList(sorting, setProcessList);
+  };
 
   // prettier-ignore
-  headerConfig = [
+  const headerConfig = [
     { class: 'state',        request: 'state',       sortable: false, content: 'State'},
     { class: 'instance-id',  request: 'instanceId',  sortable: true, content: 'ID'},
     { class: 'business-key', request: 'businessKey', sortable: true, content: 'Business Key'}
   ];
 
-  render() {
-    if (this.state.processList === null) {
-      return <div>Loading...</div>;
-    } else {
-      const tableContent = this.state.processList.map(instance => {
-        return [instance.suspended, instance.id, instance.businessKey];
-      });
+  const [processList, setProcessList] = useState(null);
+  const [sortObj, setSortObj] = useState({
+    sortBy: 'instanceId',
+    sortOrder: 'asc'
+  });
 
-      return (
-        <div>
-          <SortableTable
-            onSortChange={this.handleSortChange}
-            sorting={this.state.sortObj}
-            headers={this.headerConfig}
-            content={tableContent}
-          />
-        </div>
-      );
+  useEffect(() => {
+    const updateList = (sorting, setState) => {
+      setState(null);
+      camAPI.processInstance
+        .list({
+          processDefinitionId: props.processDefinition.id,
+          ...sorting
+        })
+        .then(data => {
+          console.log(data);
+          setState(data);
+        })
+        .catch(e => {
+          console.log(e);
+        });
+    };
+
+    function setState(state) {
+      setProcessList(state);
     }
+    updateList(sortObj, setState);
+  }, [props.processDefinition.id, sortObj]);
+
+  console.log('processList', processList);
+  if (processList === null) {
+    return <div>Loading...</div>;
+  } else {
+    console.log('processList', processList);
+    const tableContent = processList.map(instance => {
+      return [instance.suspended, instance.id, instance.businessKey];
+    });
+
+    return (
+      <div>
+        <SortableTable
+          onSortChange={newSortObj =>
+            handleSortChange(newSortObj, sortObj, setSortObj)
+          }
+          sorting={sortObj}
+          headers={headerConfig}
+          content={tableContent}
+        />
+      </div>
+    );
   }
 }
 

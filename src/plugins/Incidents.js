@@ -82,6 +82,7 @@ class ProcessInstances extends React.Component {
           show: false,
           openedIncident: null
         });
+        this.updateList(this.state.sortObj);
       })
       .catch(e => {
         console.error(e);
