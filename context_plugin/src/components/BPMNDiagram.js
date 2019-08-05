@@ -31,6 +31,8 @@ export default class BPMNDiagram extends React.Component {
 
       return this.handleShown(warnings);
     });
+
+    this.bpmnViewer.importXML(this.props.xml);
   }
 
   componentWillUnmount() {
@@ -41,11 +43,7 @@ export default class BPMNDiagram extends React.Component {
     const {props, state} = this;
 
     if (props.xml !== prevProps.xml) {
-      this.setState({diagramXML: props.xml});
-    }
-
-    if (state.diagramXML !== prevState.diagramXML) {
-      return this.bpmnViewer.importXML(state.diagramXML);
+      return this.bpmnViewer.importXML(props.xml);
     }
   }
 

@@ -3,6 +3,7 @@ import demoTab from './demoTab';
 import demoTab2 from './demoTab2';
 import processInstances from './processInstances';
 import Incidents from './Incidents';
+import AngularWrapper from './angular/adapter';
 
 export default {
   plugins: {},
@@ -18,6 +19,8 @@ export default {
 
     this.addPlugin(demoTab);
     this.addPlugin(demoTab2);
+
+    this.addPlugin(AngularWrapper);
 
     return this.plugins;
   }

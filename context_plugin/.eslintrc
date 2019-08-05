@@ -2,6 +2,8 @@
   "extends": "react-app",
   "plugins": ["prettier"],
   "rules": {
-    "prettier/prettier": "error"
+    "prettier/prettier": "error",
+    "import/no-amd": 0 // Here I manually override this specific rule
+
   }
 }

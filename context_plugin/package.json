@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "angular": "^1.7.8",
     "bootstrap": "^4.3.1",
     "bpmn-js": "^4.0.2",
     "glyphicons": "^0.2.0",

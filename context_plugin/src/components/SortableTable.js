@@ -6,7 +6,6 @@ export default function({headers, onSortChange, sorting, ...props}) {
   const newLabels = headers.map(label => {
     const icon = (() => {
       if (label.sortable) {
-        console.log(sorting.sortBy, label.request);
         if (sorting.sortBy !== label.request) return '🔘';
         return sorting.sortOrder === 'desc' ? '⬇️' : '⬆️';
       }
@@ -14,15 +13,16 @@ export default function({headers, onSortChange, sorting, ...props}) {
 
     return (
       <div className="w-100">
-        <a
+        <button
           onClick={() => {
             onSortChange(label);
           }}
+          style={{padding: 0, border: 'none', background: 'none'}}
         >
           <span role="img" aria-label="arrow">
             {icon}
           </span>
-        </a>
+        </button>
         {label.content}
       </div>
     );
