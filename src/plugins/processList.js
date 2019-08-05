@@ -6,7 +6,6 @@ function processList() {
   return (
     <ProcessDefinitionsContext.Consumer>
       {processList => {
-        console.log(processList);
         return (
           <section>
             <h3>{processList.length} process definitions deployed</h3>

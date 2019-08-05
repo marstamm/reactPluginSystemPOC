@@ -1,27 +1,19 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import camAPI from '../services/restClient';
 // import Table from '../components/Table';
 import SortableTable from '../components/SortableTable';
 import {ProcessDefinitionContext} from '../contexts/ProcessDefinitionContext';
 
-function ProcessInstances(props) {
+function ProcessInstances() {
+  const processDefinition = useContext(ProcessDefinitionContext);
 
   const handleSortChange = (newSortObj, oldSortObj, setSortObj) => {
-    // do stuff
-    console.log(newSortObj, oldSortObj);
-
     let sorting = {sortBy: newSortObj.request, sortOrder: 'asc'};
 
     if (newSortObj.request === oldSortObj.sortBy) {
-      console.log('Foobar', newSortObj.sortOrder);
       sorting.sortOrder = oldSortObj.sortOrder === 'desc' ? 'asc' : 'desc';
     }
-
-
-      console.log(sorting, oldSortObj);
-    // setProcessList(null);
     setSortObj(sorting);
-    // updateList(sorting, setProcessList);
   };
 
   // prettier-ignore
@@ -38,33 +30,27 @@ function ProcessInstances(props) {
   });
 
   useEffect(() => {
-    const updateList = (sorting, setState) => {
-      setState(null);
+    const updateList = sorting => {
+      setProcessList(null);
       camAPI.processInstance
         .list({
-          processDefinitionId: props.processDefinition.id,
+          processDefinitionId: processDefinition.id,
           ...sorting
         })
         .then(data => {
-          console.log(data);
-          setState(data);
+          setProcessList(data);
         })
         .catch(e => {
-          console.log(e);
+          console.error(e);
         });
     };
 
-    function setState(state) {
-      setProcessList(state);
-    }
-    updateList(sortObj, setState);
-  }, [props.processDefinition.id, sortObj]);
+    updateList(sortObj);
+  }, [processDefinition.id, sortObj]);
 
-  console.log('processList', processList);
   if (processList === null) {
     return <div>Loading...</div>;
   } else {
-    console.log('processList', processList);
     const tableContent = processList.map(instance => {
       return [instance.suspended, instance.id, instance.businessKey];
     });
@@ -84,19 +70,9 @@ function ProcessInstances(props) {
   }
 }
 
-function Wrapper() {
-  return (
-    <ProcessDefinitionContext.Consumer>
-      {PD => {
-        return <ProcessInstances processDefinition={PD} />;
-      }}
-    </ProcessDefinitionContext.Consumer>
-  );
-}
-
 export default {
   id: 'processInstances',
   label: 'Process Instances',
   entry: 'cockpit.process.definition.tab',
-  component: Wrapper
+  component: ProcessInstances
 };

@@ -1,10 +1,10 @@
 import queryString from 'query-string';
 
 const restClient = {
-  path: 'http://localhost:8080/engine-rest/',
+  path: 'http://localhost:8081/engine-rest/',
 
   processDefinition: {
-    path: 'http://localhost:8080/engine-rest/process-definition',
+    path: 'http://localhost:8081/engine-rest/process-definition',
     list: function(params) {
       console.log(this.path, this);
       return new Promise((resolve, reject) => {
@@ -40,7 +40,7 @@ const restClient = {
   },
 
   processInstance: {
-    path: 'http://localhost:8080/engine-rest/process-instance',
+    path: 'http://localhost:8081/engine-rest/process-instance',
     list: function(params) {
       console.log(this.path, this);
       return new Promise((resolve, reject) => {
@@ -60,7 +60,7 @@ const restClient = {
   },
 
   incidents: {
-    path: 'http://localhost:8080/engine-rest/incident/',
+    path: 'http://localhost:8081/engine-rest/incident/',
     get: function(params) {
       return new Promise((resolve, reject) => {
         fetch(this.path + '?' + queryString.stringify(params), {
@@ -77,7 +77,7 @@ const restClient = {
     },
     retry: function(id) {
       return new Promise((resolve, reject) => {
-        fetch(`http://localhost:8080/engine-rest/job/${id}/retries`, {
+        fetch(`http://localhost:8081/engine-rest/job/${id}/retries`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
